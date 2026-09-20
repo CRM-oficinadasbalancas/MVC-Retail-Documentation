@@ -168,13 +168,19 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equip
 
 ## Status atual / próximas pendências
 
-1. **Piloto de dados concluído** — 5 registros reais em `equipamentos`, revisados por
+1. **Catálogo em construção** — 6 registros reais em `equipamentos`, revisados por
    Luiz Gustavo (lgbz1908@gmail.com): 2098 C (MVC), 2095 (MVC), 2180 Piso Inox (MVC,
-   até 3.000 kg), 2180 Piso Inox (MVI, até 6.000 kg), 2199 (MVI). Todos com
-   `descricao_curta`/`specs_tecnicas` extraídos do catálogo comercial e
-   `restricoes_uso`/`url_ficha_tecnica` complementados pela LTP, conforme o processo
-   descrito em "Origem dos dados" acima. Nenhuma imagem cadastrada em
-   `imagens_equipamento` ainda.
+   até 3.000 kg), 2180 Piso Inox (MVI, até 6.000 kg), 2199 (MVI), Prix 5 Plus (MVC,
+   Automação Comercial). Todos com `descricao_curta`/`specs_tecnicas` extraídos do
+   catálogo comercial e `restricoes_uso`/`url_ficha_tecnica` complementados pela LTP,
+   conforme o processo descrito em "Origem dos dados" acima. Nenhuma imagem cadastrada
+   em `imagens_equipamento` ainda.
+   - Caso real de fonte antiga vs. atual: no catálogo da Prix 5 Plus, um trecho da
+     tabela de especificações técnicas diz "30 kg" enquanto a introdução do mesmo
+     catálogo e a LTP dizem "32 kg" (com os 3 códigos de venda reais confirmando
+     32 kg). Confirmado por revisão humana: 32 kg é o valor certo, 30 kg é de uma
+     versão antiga/descontinuada do equipamento — não necessariamente "a LTP está
+     desatualizada", às vezes o próprio catálogo carrega lixo de revisão anterior.
 2. Algumas fichas (ex.: bobina, pá carregadeira, empilhadeira, paleteira na linha MVI)
    exigem preencher um "Datasheet" à parte antes de gerar proposta — ainda não decidido
    se isso vira um campo (`requer_datasheet`) ou fica só como observação manual. O
