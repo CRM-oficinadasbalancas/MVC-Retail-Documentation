@@ -22,6 +22,9 @@ export interface Equipamento {
   specs_tecnicas: SpecsTecnicas;
   restricoes_uso: string | null;
   url_ficha_tecnica: string | null;
+  // link real de vídeo (Drive) — nunca inventado; só populado quando um vídeo
+  // do próprio modelo foi encontrado na pasta oficial "5 - Vídeos" do Drive.
+  url_video: string | null;
   status: "ativo" | "descontinuado";
   fonte: string;
   revisado_por: string | null;

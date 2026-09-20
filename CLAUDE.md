@@ -214,3 +214,21 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equip
    equipamento em bullets (não cabem bem dentro das células da grade). Chamada pelo
    botão "Gerar apresentação (PDF)" em `/comparar`, arquivo baixado como
    `comparativo-toledo.pdf`.
+8. **Novo layout do `/catalogo`** — trocado o filtro único em `<select>` por abas
+   (`src/components/CatalogoTabs.tsx`): uma aba por linha (`MVC`, `MVI`, ...),
+   lida dinamicamente de `linhas_negocio` (não hardcoded — MVV aparece sozinha
+   quando for inserida), mais uma aba **Vídeos**. Cada aba de linha mostra a
+   grade de `EquipamentoCard` (extraído para `src/components/EquipamentoCard.tsx`
+   pra reuso) só daquela linha. A aba Vídeos lista, com preview embutido do
+   próprio Drive (iframe `/preview`), todo equipamento com `url_video`
+   preenchido — coluna nova em `equipamentos` (migration
+   `add_url_video_equipamentos`), populada só quando um vídeo real do próprio
+   modelo foi confirmado na pasta oficial "5 - Vídeos" do Drive (nunca
+   inventado, mesma regra de qualquer outro campo). Populado até agora: Prix 5
+   Plus, Prix 4 Uno, Prix 4 Due, Prix 4 Trend, 2095. Vídeos encontrados sob o
+   nome "Prix 6i" (pasta "Prix 6 e 6i c/ Etiqueta contínua") **não** foram
+   linkados ao registro "Prix 6" — a ficha do "Prix 6" (20.000 itens, TFT 7",
+   leitura 2D) não confirma que seja o mesmo produto que os vídeos de "6i" com
+   etiqueta contínua; fica sem vídeo até confirmar. Pastas de vídeo do MVI
+   ("Piso", "Bancada" etc.) ainda não foram abertas para checar match com 2180
+   Piso Inox / 2199.
