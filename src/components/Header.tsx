@@ -8,21 +8,20 @@ const LINKS = [
   { href: "/buscar", label: "Buscar com IA" },
 ];
 
-// Logo é placeholder até recebermos o arquivo oficial da Toledo — ver
-// CLAUDE.md § "Identidade visual". Nunca escolhido pela IA, sempre o mesmo
-// template fixo aqui e em src/lib/apresentacao/pdf.ts.
+// Logo oficial Prix — mesmo arquivo usado aqui e em
+// src/lib/apresentacao/pdf.ts, nunca escolhido pela IA. Ver CLAUDE.md §
+// "Identidade visual".
 export function Header() {
   return (
     <header className="flex items-center justify-between gap-4 bg-[var(--color-azul-prix)] px-4 py-3 text-white">
       <div className="flex items-center gap-3">
         <Image
-          src="/icons/icon.svg"
-          alt="Toledo"
-          width={32}
-          height={32}
-          className="rounded"
+          src="/logo/prix-logo.png"
+          alt="Prix — Toledo do Brasil"
+          width={36}
+          height={36}
         />
-        <span className="font-semibold">Toledo</span>
+        <span className="font-semibold">Agente Comercial</span>
       </div>
       <nav className="flex gap-4 text-sm">
         {LINKS.map((link) => (

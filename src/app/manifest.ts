@@ -1,7 +1,5 @@
 import type { MetadataRoute } from "next";
 
-// Ícone é placeholder (letra "T" em Azul Prix) até recebermos o logo oficial
-// Toledo — ver CLAUDE.md § "Identidade visual".
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Agente Comercial Toledo",
@@ -14,16 +12,10 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#0b66b2",
     icons: [
       {
-        src: "/icons/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/logo/prix-logo.png",
+        sizes: "1944x1944",
+        type: "image/png",
         purpose: "any",
-      },
-      {
-        src: "/icons/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "maskable",
       },
     ],
   };

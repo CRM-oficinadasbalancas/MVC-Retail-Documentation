@@ -134,11 +134,11 @@ Pipeline Drive → Supabase:
   em `src/app/globals.css`.
 - **Chumbo Prix** `#2c2c39` (Pantone 533C) — neutro escuro: texto, rodapé. Token:
   `--color-chumbo-prix`.
-- Logo fixo no cabeçalho e rodapé do app e de todo documento gerado, sempre pelo mesmo
-  template — nunca escolhido pela IA a cada geração. Logo real ainda não recebido —
-  hoje o header/footer usam só o texto "Toledo" nas cores da marca como placeholder
-  (`src/components/Header.tsx`, `src/lib/apresentacao/pdf.ts`); trocar pelo arquivo de
-  logo oficial quando disponível.
+- Logo oficial Prix (`public/logo/prix-logo.png` — selo circular branco com "prix" em
+  azul, fundo transparente) fixo no cabeçalho do app e de todo PDF gerado, sempre pelo
+  mesmo arquivo — nunca escolhido pela IA a cada geração. Usado em
+  `src/components/Header.tsx`, `src/lib/apresentacao/pdf.ts` (embutido via
+  `pdf.embedPng`) e `src/app/manifest.ts` (ícone do PWA).
 
 ## Acesso
 
@@ -186,4 +186,15 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equip
 4. Scaffold inicial construído em sessão anterior: catálogo, comparação, busca com IA
    (ferramenta única) e geração de apresentação em PDF. **Pendente**: sync
    Drive→Supabase de imagens, geração em PPTX (só PDF foi implementado), domínio de
-   e-mail real para o login, logo oficial, ampliar o catálogo além dos 5 modelos piloto.
+   e-mail real para o login, ampliar o catálogo além dos 5 modelos piloto.
+5. Login Google SSO testado de ponta a ponta em produção (`agente-toledo.vercel.app`,
+   projeto Vercel `agente-toledo`, sem proteção SSO da própria Vercel — desativada de
+   propósito pra não empilhar duas autenticações). Falta só travar
+   `ALLOWED_EMAIL_DOMAIN` com o domínio real antes de abrir pro time de vendas.
+6. `specs_tecnicas`/`descricao_curta` foram revisados uma segunda vez: a primeira
+   extração puxou a seção técnica da LTP (grau de proteção, classe de exatidão etc.),
+   que não ajuda o vendedor em campo. Corrigido para priorizar a chave `diferenciais`
+   (benefícios/argumentos de venda do catálogo comercial) — ver "Origem dos dados"
+   acima. Essa é a estrutura a seguir ao popular novos modelos: sempre extrair
+   `diferenciais` do catálogo primeiro, specs de engenharia da LTP só como
+   complemento secundário.

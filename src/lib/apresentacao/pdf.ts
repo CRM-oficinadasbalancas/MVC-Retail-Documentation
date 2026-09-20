@@ -1,4 +1,6 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from "pdf-lib";
 import type { Equipamento, SpecsTecnicas } from "@/types/equipamento";
 
 // Identidade visual Toledo — mesmos tokens de src/app/globals.css
@@ -16,8 +18,9 @@ const ALTURA_FOOTER = 36;
 /**
  * Gera o PDF da apresentação. Todos os números e specs vêm direto de
  * `equipamentos` (lido pelo código, não pela IA) — ver CLAUDE.md § "REGRA
- * CRÍTICA". Logo é placeholder (texto "Toledo") até recebermos o arquivo
- * oficial — mesmo texto usado em src/components/Header.tsx.
+ * CRÍTICA". Logo é a marca oficial Prix (public/logo/prix-logo.png) — mesmo
+ * arquivo usado em src/components/Header.tsx, sempre pelo mesmo template,
+ * nunca escolhido pela IA a cada geração.
  */
 export async function gerarApresentacaoPdf(
   equipamentos: Equipamento[],
@@ -26,14 +29,19 @@ export async function gerarApresentacaoPdf(
   const fonteRegular = await pdf.embedFont(StandardFonts.Helvetica);
   const fonteBold = await pdf.embedFont(StandardFonts.HelveticaBold);
 
+  const logoBytes = await readFile(
+    path.join(process.cwd(), "public", "logo", "prix-logo.png"),
+  );
+  const logo = await pdf.embedPng(logoBytes);
+
   for (const equipamento of equipamentos) {
-    desenharPaginaEquipamento(pdf, fonteRegular, fonteBold, equipamento);
+    desenharPaginaEquipamento(pdf, fonteRegular, fonteBold, logo, equipamento);
   }
 
   return pdf.save();
 }
 
-function novaPagina(pdf: PDFDocument, fonteBold: PDFFont) {
+function novaPagina(pdf: PDFDocument, logo: PDFImage) {
   const page = pdf.addPage([LARGURA, ALTURA]);
 
   page.drawRectangle({
@@ -43,12 +51,14 @@ function novaPagina(pdf: PDFDocument, fonteBold: PDFFont) {
     height: ALTURA_HEADER,
     color: AZUL_PRIX,
   });
-  page.drawText("Toledo", {
+
+  const alturaLogo = ALTURA_HEADER - 16;
+  const larguraLogo = alturaLogo * (logo.width / logo.height);
+  page.drawImage(logo, {
     x: MARGEM,
-    y: ALTURA - ALTURA_HEADER / 2 - 7,
-    size: 18,
-    font: fonteBold,
-    color: BRANCO,
+    y: ALTURA - ALTURA_HEADER / 2 - alturaLogo / 2,
+    width: larguraLogo,
+    height: alturaLogo,
   });
 
   page.drawRectangle({
@@ -66,9 +76,10 @@ function desenharPaginaEquipamento(
   pdf: PDFDocument,
   fonteRegular: PDFFont,
   fonteBold: PDFFont,
+  logo: PDFImage,
   equipamento: Equipamento,
 ) {
-  const page = novaPagina(pdf, fonteBold);
+  const page = novaPagina(pdf, logo);
   let y = ALTURA - ALTURA_HEADER - 40;
   const larguraUtil = LARGURA - MARGEM * 2;
 
