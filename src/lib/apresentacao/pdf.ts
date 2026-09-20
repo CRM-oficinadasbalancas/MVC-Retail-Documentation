@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import type { Equipamento } from "@/types/equipamento";
+import type { Equipamento, SpecsTecnicas } from "@/types/equipamento";
 
 // Identidade visual Toledo — mesmos tokens de src/app/globals.css
 const AZUL_PRIX = rgb(0x0b / 255, 0x66 / 255, 0xb2 / 255);
@@ -131,16 +131,58 @@ function desenharPaginaEquipamento(
     y -= alturaCaixa + 20;
   }
 
-  const especificacoes = Object.entries(equipamento.specs_tecnicas ?? {});
-  if (especificacoes.length > 0) {
-    page.drawText("Especificações técnicas", {
+  const specs = equipamento.specs_tecnicas ?? {};
+  const { capacidade_min_kg, capacidade_max_kg, diferenciais, ...detalhesTecnicos } =
+    specs as SpecsTecnicas & { diferenciais?: string[] };
+
+  if (capacidade_min_kg != null || capacidade_max_kg != null) {
+    page.drawText(`Capacidade: ${capacidade_min_kg ?? "—"} a ${capacidade_max_kg ?? "—"} kg`, {
       x: MARGEM,
       y,
       size: 13,
       font: fonteBold,
       color: CHUMBO_PRIX,
     });
-    y -= 20;
+    y -= 24;
+  }
+
+  // "diferenciais" é o argumento de venda (do catálogo comercial) — sempre em
+  // destaque antes dos dados técnicos de engenharia, que interessam menos ao
+  // vendedor em campo. Ver CLAUDE.md § "Origem dos dados".
+  if (Array.isArray(diferenciais) && diferenciais.length > 0) {
+    page.drawText("Por que vender este modelo", {
+      x: MARGEM,
+      y,
+      size: 13,
+      font: fonteBold,
+      color: AZUL_PRIX,
+    });
+    y -= 18;
+
+    for (const item of diferenciais) {
+      y = desenharTextoComQuebra(page, `•  ${String(item)}`, {
+        x: MARGEM,
+        y,
+        largura: larguraUtil,
+        fonte: fonteRegular,
+        tamanho: 10.5,
+        cor: CHUMBO_PRIX,
+      });
+      y -= 4;
+    }
+    y -= 14;
+  }
+
+  const especificacoes = Object.entries(detalhesTecnicos);
+  if (especificacoes.length > 0) {
+    page.drawText("Detalhes técnicos", {
+      x: MARGEM,
+      y,
+      size: 11,
+      font: fonteBold,
+      color: CHUMBO_PRIX,
+    });
+    y -= 18;
 
     for (const [chave, valor] of especificacoes) {
       const texto = `${formatarChave(chave)}: ${formatarValor(valor)}`;
@@ -149,12 +191,12 @@ function desenharPaginaEquipamento(
         y,
         largura: larguraUtil,
         fonte: fonteRegular,
-        tamanho: 10.5,
+        tamanho: 9.5,
         cor: CHUMBO_PRIX,
       });
-      y -= 6;
+      y -= 4;
     }
-  } else {
+  } else if (!diferenciais) {
     page.drawText("Nenhuma especificação técnica cadastrada para este modelo.", {
       x: MARGEM,
       y,

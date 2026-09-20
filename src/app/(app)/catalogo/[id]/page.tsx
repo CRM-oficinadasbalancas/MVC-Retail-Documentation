@@ -62,6 +62,8 @@ export default async function EquipamentoDetalhePage({
         </div>
       )}
 
+      <CapacidadeDestaque specs={equipamento.specs_tecnicas as SpecsTecnicas} />
+      <DiferenciaisDestaque specs={equipamento.specs_tecnicas as SpecsTecnicas} />
       <SpecsTable specs={equipamento.specs_tecnicas as SpecsTecnicas} />
 
       {equipamento.url_ficha_tecnica && (
@@ -92,30 +94,73 @@ export default async function EquipamentoDetalhePage({
   );
 }
 
-function SpecsTable({ specs }: { specs: SpecsTecnicas }) {
-  const entradas = Object.entries(specs ?? {});
-  if (entradas.length === 0) {
-    return (
-      <p className="text-sm text-[var(--color-chumbo-prix)]/70">
-        Nenhuma especificação técnica cadastrada para este modelo ainda.
+// Chaves mostradas em destaque separado (capacidade e diferenciais), não repetidas
+// na tabela de detalhes técnicos abaixo.
+const CHAVES_CAPACIDADE = ["capacidade_min_kg", "capacidade_max_kg"];
+const CHAVE_DIFERENCIAIS = "diferenciais";
+
+function CapacidadeDestaque({ specs }: { specs: SpecsTecnicas }) {
+  const min = specs?.capacidade_min_kg;
+  const max = specs?.capacidade_max_kg;
+  if (min == null && max == null) return null;
+
+  return (
+    <p className="text-lg font-semibold text-[var(--color-chumbo-prix)]">
+      Capacidade: {min ?? "—"} a {max ?? "—"} kg
+    </p>
+  );
+}
+
+// "diferenciais" é o argumento de venda — o que ajuda o vendedor a convencer o
+// cliente na rua. Sempre em destaque, nunca misturado na tabela técnica.
+function DiferenciaisDestaque({ specs }: { specs: SpecsTecnicas }) {
+  const diferenciais = specs?.[CHAVE_DIFERENCIAIS];
+  if (!Array.isArray(diferenciais) || diferenciais.length === 0) return null;
+
+  return (
+    <div className="rounded-md border border-[var(--color-azul-prix)]/30 bg-[var(--color-azul-prix)]/5 p-4">
+      <p className="mb-2 font-semibold text-[var(--color-azul-prix)]">
+        Por que vender este modelo
       </p>
-    );
+      <ul className="flex flex-col gap-1.5 text-sm text-[var(--color-chumbo-prix)]">
+        {diferenciais.map((item) => (
+          <li key={String(item)} className="flex gap-2">
+            <span className="text-[var(--color-azul-prix)]">•</span>
+            <span>{String(item)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SpecsTable({ specs }: { specs: SpecsTecnicas }) {
+  const entradas = Object.entries(specs ?? {}).filter(
+    ([chave]) => chave !== CHAVE_DIFERENCIAIS && !CHAVES_CAPACIDADE.includes(chave),
+  );
+  if (entradas.length === 0) {
+    return null;
   }
 
   return (
-    <table className="w-full text-sm">
-      <tbody>
-        {entradas.map(([chave, valor]) => (
-          <tr key={chave} className="border-b border-gray-100">
-            <td className="py-2 pr-4 font-medium text-[var(--color-chumbo-prix)] capitalize">
-              {chave.replaceAll("_", " ")}
-            </td>
-            <td className="py-2 text-[var(--color-chumbo-prix)]/90">
-              {Array.isArray(valor) ? valor.join(", ") : String(valor ?? "—")}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div>
+      <p className="mb-2 text-sm font-semibold text-[var(--color-chumbo-prix)]/70">
+        Detalhes técnicos
+      </p>
+      <table className="w-full text-sm">
+        <tbody>
+          {entradas.map(([chave, valor]) => (
+            <tr key={chave} className="border-b border-gray-100">
+              <td className="py-2 pr-4 font-medium text-[var(--color-chumbo-prix)] capitalize">
+                {chave.replaceAll("_", " ")}
+              </td>
+              <td className="py-2 text-[var(--color-chumbo-prix)]/90">
+                {Array.isArray(valor) ? valor.join(", ") : String(valor ?? "—")}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

@@ -74,7 +74,17 @@ function CompararConteudo() {
     for (const e of equipamentosSelecionados) {
       Object.keys(e.specs_tecnicas ?? {}).forEach((chave) => chaves.add(chave));
     }
-    return Array.from(chaves);
+    // capacidade e diferenciais (argumento de venda) primeiro — o resto (specs
+    // técnicas) fica depois, importa menos pro vendedor decidir na hora
+    const prioridade = ["capacidade_min_kg", "capacidade_max_kg", "diferenciais"];
+    return Array.from(chaves).sort((a, b) => {
+      const posA = prioridade.indexOf(a);
+      const posB = prioridade.indexOf(b);
+      if (posA === -1 && posB === -1) return a.localeCompare(b);
+      if (posA === -1) return 1;
+      if (posB === -1) return -1;
+      return posA - posB;
+    });
   }, [equipamentosSelecionados]);
 
   return (
@@ -146,12 +156,23 @@ function CompararConteudo() {
                   {equipamentosSelecionados.map((e) => {
                     const valor = e.specs_tecnicas?.[chave];
                     return (
-                      <td key={e.id} className="p-2 text-[var(--color-chumbo-prix)]/90">
-                        {valor == null
-                          ? "—"
-                          : Array.isArray(valor)
-                            ? valor.join(", ")
-                            : String(valor)}
+                      <td key={e.id} className="p-2 align-top text-[var(--color-chumbo-prix)]/90">
+                        {valor == null ? (
+                          "—"
+                        ) : chave === "diferenciais" && Array.isArray(valor) ? (
+                          <ul className="flex flex-col gap-1">
+                            {valor.map((item) => (
+                              <li key={String(item)} className="flex gap-1.5">
+                                <span className="text-[var(--color-azul-prix)]">•</span>
+                                <span>{String(item)}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : Array.isArray(valor) ? (
+                          valor.join(", ")
+                        ) : (
+                          String(valor)
+                        )}
                       </td>
                     );
                   })}
