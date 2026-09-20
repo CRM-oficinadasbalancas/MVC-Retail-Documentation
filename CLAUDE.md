@@ -70,12 +70,35 @@ separado, fora deste projeto. Se algo no código passar a ler `preco_faixa`, é 
 Pasta "Toledo do Brasil - Vendas" (Drive), estrutura numerada e oficial. Pastas
 relevantes para este projeto:
 
-- **7 - (LTP) Lista Técnica de Produtos** → fonte primária de `specs_tecnicas`,
-  `restricoes_legais` e `url_ficha_tecnica`. Organizada por categoria (ver abaixo) e
-  depois por linha (`LTP - MVC` / `LTP - MVI`).
-- **6 - Lista de Preços** → possível fonte de `preco_faixa`.
-- **1 - Catálogos - MVC**, **2 - Catálogo - MVI**, **3 - Catálogo Geral** → possível
-  fonte de imagens e descrição comercial.
+- **1 - Catálogos - MVC** e **2 - Catálogo - MVI** → **fonte primária** de
+  `descricao_curta` e `specs_tecnicas`. O foco do app é o vendedor, não o técnico — o
+  catálogo já traz a informação no nível de detalhe certo para isso. Organizados por
+  nome comercial do produto (ex.: "Prix Splash", "2199"), não pela mesma taxonomia de
+  categoria da LTP-MVC — não assumir 1:1 entre nome de pasta e `categoria`.
+- **7 - (LTP) Lista Técnica de Produtos** → fonte **complementar**, usada só para
+  `restricoes_uso` (quando o catálogo comercial não menciona, o que é comum) e
+  `url_ficha_tecnica`. **A LTP pode estar desatualizada em relação ao catálogo** —
+  confirmado num caso real (2098 C: catálogo diz capacidade mínima 32 kg, LTP de 2018
+  diz 30 kg). Em conflito entre catálogo e LTP, **o catálogo prevalece**, a não ser que
+  o revisor humano tenha informação de campo mais precisa (ver nota do 2180 abaixo).
+  A LTP-MVC é organizada pela taxonomia de categoria (ver lista abaixo); **a LTP-MVI
+  não segue a mesma taxonomia** — é uma mistura de pastas por aplicação
+  ("Animais Vivos - Balanças", "Bancada, Piso e Tendal - Terminais") e material de
+  referência genérico, não por categoria nem por modelo.
+- **Um modelo pode pertencer a mais de uma `linha` com faixas de capacidade
+  diferentes** — caso real: "2180 Piso Inox" é vendida tanto na linha comercial
+  (capacidade até 3.000 kg) quanto na industrial (até 6.000 kg). Nesse caso o modelo
+  entra como **duas linhas em `equipamentos`** (mesmo `modelo`, `linha` diferente,
+  `specs_tecnicas.capacidade_max_kg` diferente) — não é duplicidade, é a mesma peça
+  vendida sob catalogação diferente por linha. Já um modelo "focado no comércio mas
+  também vendido pra indústria" sem faixa de capacidade distinta (caso do 2098 C) não
+  precisa dessa duplicação — fica só na linha principal, com nota na `descricao_curta`.
+- **6 - Lista de Preços** → possível fonte de `preco_faixa` (fora de escopo, ver acima).
+- **3 - Catálogo Geral** → catálogo único (`catalogo_geral_2022_web.pdf`, de 2022 —
+  cuidado com desatualização) cobrindo todas as linhas; útil como fallback quando não
+  existe catálogo específico do modelo em MVC/MVI.
+- **5 - Vídeos** → organizada por nome comercial do produto (mistura com pastas de
+  suporte/revenda), não por categoria. Ainda não usada no app.
 - **11 - Apresentações** → referência de formato para a apresentação gerada pelo app.
 
 **Taxonomia real de categoria** (pastas dentro de LTP - MVC, usar como valores de
@@ -145,16 +168,22 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equip
 
 ## Status atual / próximas pendências
 
-1. `specs_tecnicas` já validado com um exemplo real de MVC (2098 C) e um de MVI (2180
-   Piso Inox) — ver exemplos comentados no `schema.sql`. Escolher mais 1-2 modelos de
-   cada linha antes de popular o catálogo inicial pra garantir que os campos generalizam.
-   **A tabela está vazia hoje** — nenhum equipamento real foi inserido ainda.
+1. **Piloto de dados concluído** — 5 registros reais em `equipamentos`, revisados por
+   Luiz Gustavo (lgbz1908@gmail.com): 2098 C (MVC), 2095 (MVC), 2180 Piso Inox (MVC,
+   até 3.000 kg), 2180 Piso Inox (MVI, até 6.000 kg), 2199 (MVI). Todos com
+   `descricao_curta`/`specs_tecnicas` extraídos do catálogo comercial e
+   `restricoes_uso`/`url_ficha_tecnica` complementados pela LTP, conforme o processo
+   descrito em "Origem dos dados" acima. Nenhuma imagem cadastrada em
+   `imagens_equipamento` ainda.
 2. Algumas fichas (ex.: bobina, pá carregadeira, empilhadeira, paleteira na linha MVI)
    exigem preencher um "Datasheet" à parte antes de gerar proposta — ainda não decidido
-   se isso vira um campo (`requer_datasheet`) ou fica só como observação manual.
+   se isso vira um campo (`requer_datasheet`) ou fica só como observação manual. O
+   registro do "2180 Piso Inox" já tem essa observação solta dentro de `restricoes_uso`
+   (não é bem uma restrição, é um processo comercial) — revisar quando essa decisão de
+   schema for tomada.
 3. Quando a MVV (Varejo) for lançada oficialmente, adicionar em `linhas_negocio` e
    revisar se o app precisa de algum campo específico dela.
-4. Scaffold inicial construído nesta sessão: catálogo, comparação, busca com IA
-   (ferramenta única) e geração de apresentação em PDF. **Pendente**: sync Drive→Supabase
-   de imagens/specs, geração em PPTX (só PDF foi implementado), domínio de e-mail real
-   para o login, logo oficial, popular dados reais.
+4. Scaffold inicial construído em sessão anterior: catálogo, comparação, busca com IA
+   (ferramenta única) e geração de apresentação em PDF. **Pendente**: sync
+   Drive→Supabase de imagens, geração em PPTX (só PDF foi implementado), domínio de
+   e-mail real para o login, logo oficial, ampliar o catálogo além dos 5 modelos piloto.
