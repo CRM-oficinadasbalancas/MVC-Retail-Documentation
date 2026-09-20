@@ -204,3 +204,13 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equip
    acima. Essa é a estrutura a seguir ao popular novos modelos: sempre extrair
    `diferenciais` do catálogo primeiro, specs de engenharia da LTP só como
    complemento secundário.
+7. **PDF gerado em `src/lib/apresentacao/pdf.ts` reformulado** — trocado de "uma
+   página por modelo" (retrato) para uma **grade comparativa** em paisagem (um
+   modelo por coluna), a pedido do usuário, que trouxe um exemplo pronto como
+   referência de formato. Página 1 em diante: grade com todas as chaves de
+   `specs_tecnicas` (exceto `diferenciais`) como linhas, capacidade e restrições
+   sempre no topo; repagina automaticamente se não couber numa página. Depois da
+   grade, uma seção "Por que vender cada modelo" com os `diferenciais` de cada
+   equipamento em bullets (não cabem bem dentro das células da grade). Chamada pelo
+   botão "Gerar apresentação (PDF)" em `/comparar`, arquivo baixado como
+   `comparativo-toledo.pdf`.

@@ -205,7 +205,7 @@ function GerarApresentacaoButton({ ids }: { ids: string[] }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "apresentacao-toledo.pdf";
+      a.download = "comparativo-toledo.pdf";
       a.click();
       URL.revokeObjectURL(url);
     } catch {
