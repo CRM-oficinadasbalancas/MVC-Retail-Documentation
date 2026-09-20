@@ -120,6 +120,14 @@ function novaPaginaGrade(
 ): PDFPage {
   const page = pdf.addPage([LARGURA, ALTURA]);
 
+  page.drawRectangle({
+    x: 0,
+    y: ALTURA - ALTURA_TOPO,
+    width: LARGURA,
+    height: ALTURA_TOPO,
+    color: AZUL_PRIX,
+  });
+
   const alturaLogo = 30;
   const larguraLogo = alturaLogo * (logo.width / logo.height);
   page.drawImage(logo, {
@@ -135,7 +143,7 @@ function novaPaginaGrade(
     y: ALTURA - MARGEM - 4,
     size: 14,
     font: fontes.fonteBold,
-    color: AZUL_PRIX,
+    color: BRANCO,
   });
 
   const linhas = [...new Set(equipamentos.map((e) => e.linha))].join("/");
@@ -149,14 +157,7 @@ function novaPaginaGrade(
     y: ALTURA - MARGEM - 20,
     size: 9.5,
     font: fontes.fonteRegular,
-    color: CHUMBO_PRIX,
-  });
-
-  page.drawLine({
-    start: { x: MARGEM, y: ALTURA - ALTURA_TOPO },
-    end: { x: LARGURA - MARGEM, y: ALTURA - ALTURA_TOPO },
-    thickness: 1,
-    color: CINZA_BORDA,
+    color: rgb(0.85, 0.92, 0.98),
   });
 
   page.drawRectangle({
@@ -439,6 +440,14 @@ function desenharSecaoDiferenciais(
 }
 
 function desenharCabecalhoSimples(page: PDFPage, logo: PDFImage, fontes: Fontes, titulo: string) {
+  page.drawRectangle({
+    x: 0,
+    y: ALTURA - ALTURA_TOPO,
+    width: LARGURA,
+    height: ALTURA_TOPO,
+    color: AZUL_PRIX,
+  });
+
   const alturaLogo = 30;
   const larguraLogo = alturaLogo * (logo.width / logo.height);
   page.drawImage(logo, {
@@ -452,13 +461,7 @@ function desenharCabecalhoSimples(page: PDFPage, logo: PDFImage, fontes: Fontes,
     y: ALTURA - MARGEM - 12,
     size: 13,
     font: fontes.fonteBold,
-    color: AZUL_PRIX,
-  });
-  page.drawLine({
-    start: { x: MARGEM, y: ALTURA - ALTURA_TOPO },
-    end: { x: LARGURA - MARGEM, y: ALTURA - ALTURA_TOPO },
-    thickness: 1,
-    color: CINZA_BORDA,
+    color: BRANCO,
   });
   page.drawRectangle({
     x: 0,

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { BotaoVoltar } from "@/components/BotaoVoltar";
 import { SairButton } from "@/components/SairButton";
 
 const LINKS = [
@@ -14,7 +15,8 @@ const LINKS = [
 export function Header() {
   return (
     <header className="flex items-center justify-between gap-4 bg-[var(--color-azul-prix)] px-4 py-3 text-white">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
+        <BotaoVoltar className="text-white" />
         <Image
           src="/logo/prix-logo.png"
           alt="Prix — Toledo do Brasil"

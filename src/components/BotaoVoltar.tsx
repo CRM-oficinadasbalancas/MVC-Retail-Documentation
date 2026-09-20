@@ -6,7 +6,13 @@ import { useRouter } from "next/navigation";
 // vendedor tinha aplicado) — útil sobretudo depois de abrir a ficha técnica
 // (manual) num PDF externo e querer retornar pro app. Sem histórico prévio
 // (ex.: link aberto direto), cai no fallback fixo.
-export function BotaoVoltar({ fallbackHref }: { fallbackHref: string }) {
+export function BotaoVoltar({
+  fallbackHref = "/catalogo",
+  className = "text-[var(--color-azul-prix)]",
+}: {
+  fallbackHref?: string;
+  className?: string;
+}) {
   const router = useRouter();
 
   function voltar() {
@@ -21,7 +27,7 @@ export function BotaoVoltar({ fallbackHref }: { fallbackHref: string }) {
     <button
       type="button"
       onClick={voltar}
-      className="flex w-fit items-center gap-1 text-sm font-medium text-[var(--color-azul-prix)]"
+      className={`flex w-fit items-center gap-1 text-sm font-medium hover:underline ${className}`}
     >
       ← Voltar
     </button>

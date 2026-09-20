@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { BotaoVoltar } from "@/components/BotaoVoltar";
 import { RestricoesAlerta } from "@/components/RestricoesAlerta";
 import type { SpecsTecnicas } from "@/types/equipamento";
 
@@ -31,8 +30,6 @@ export default async function EquipamentoDetalhePage({
 
   return (
     <div className="flex flex-col gap-4">
-      <BotaoVoltar fallbackHref="/catalogo" />
-
       <div>
         <span className="text-xs font-medium text-[var(--color-azul-prix)]">
           {equipamento.linha}
