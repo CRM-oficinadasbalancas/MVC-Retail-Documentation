@@ -5,16 +5,16 @@ import { EquipamentoCard } from "@/components/EquipamentoCard";
 import { CompartilharBotao } from "@/components/CompartilharBotao";
 import type { Equipamento, LinhaNegocio } from "@/types/equipamento";
 
-type EquipamentoLista = Pick<
-  Equipamento,
-  | "id"
-  | "modelo"
-  | "linha"
-  | "categoria"
-  | "descricao_curta"
-  | "restricoes_uso"
-  | "url_video"
->;
+type EquipamentoLista = Pick<Equipamento, "id" | "modelo" | "linha" | "restricoes_uso">;
+
+export interface VideoItem {
+  id: string;
+  equipamento_id: string;
+  modelo: string;
+  linha: string;
+  titulo: string | null;
+  url: string;
+}
 
 export interface FotoEquipamento {
   id: string;
@@ -28,17 +28,19 @@ export interface FotoEquipamento {
 const SECAO_VIDEOS = "VIDEOS";
 const SECAO_FOTOS = "FOTOS";
 
-// Menu em lista, ancorado à direita (não abas no topo) — cabeçalhos fixos:
-// uma linha por linha de negócio (MVC, MVI, ... lidas de linhas_negocio) mais
-// Vídeos e Fotos. Cada cabeçalho é um acordeão: abre e mostra os
-// equipamentos daquela linha (ou, em Vídeos/Fotos, um sub-menu por linha).
+// Menu em lista, ancorado à esquerda — cabeçalhos fixos: uma linha por linha
+// de negócio (MVC, MVI, ... lidas de linhas_negocio) mais Vídeos e Fotos.
+// Cada cabeçalho é um acordeão: abre e mostra os equipamentos daquela linha
+// (ou, em Vídeos/Fotos, um sub-menu por linha e depois por produto).
 export function CatalogoMenu({
   linhas,
   equipamentos,
+  videos,
   fotos,
 }: {
   linhas: LinhaNegocio[];
   equipamentos: EquipamentoLista[];
+  videos: VideoItem[];
   fotos: FotoEquipamento[];
 }) {
   const [secaoAberta, setSecaoAberta] = useState<string | null>(
@@ -54,7 +56,7 @@ export function CatalogoMenu({
   }
 
   return (
-    <div className="ml-auto flex w-full max-w-sm flex-col gap-2">
+    <div className="mr-auto flex w-full max-w-sm flex-col gap-2">
       {linhas.map((l) => (
         <Cabecalho
           key={l.codigo}
@@ -87,10 +89,8 @@ export function CatalogoMenu({
                 )
               }
             >
-              <ListaVideos
-                equipamentos={equipamentos.filter(
-                  (e) => e.linha === l.codigo && e.url_video,
-                )}
+              <ListaVideosPorProduto
+                videos={videos.filter((v) => v.linha === l.codigo)}
               />
             </Cabecalho>
           ))}
@@ -134,7 +134,7 @@ function Cabecalho({
 }: {
   titulo: string;
   subtitulo?: string;
-  nivel?: 1 | 2;
+  nivel?: 1 | 2 | 3;
   aberto: boolean;
   onToggle: () => void;
   children: React.ReactNode;
@@ -144,7 +144,9 @@ function Cabecalho({
       className={
         nivel === 1
           ? "rounded-md border border-gray-200"
-          : "rounded-md border border-gray-100 bg-gray-50"
+          : nivel === 2
+            ? "rounded-md border border-gray-100 bg-gray-50"
+            : "rounded-md border border-gray-100 bg-white"
       }
     >
       <button
@@ -157,7 +159,7 @@ function Cabecalho({
         <span className="flex flex-col">
           <span
             className={`font-semibold text-[var(--color-chumbo-prix)] ${
-              nivel === 2 ? "text-sm" : ""
+              nivel !== 1 ? "text-sm" : ""
             }`}
           >
             {titulo}
@@ -203,8 +205,13 @@ function ListaEquipamentos({
   );
 }
 
-function ListaVideos({ equipamentos }: { equipamentos: EquipamentoLista[] }) {
-  if (equipamentos.length === 0) {
+// Um produto pode ter vários vídeos reais (ex.: Prix 5 Plus tem 6) — por isso
+// o cabeçalho de cada produto já mostra a quantidade, e só ao abrir aparece
+// cada vídeo individualmente com o botão de compartilhar.
+function ListaVideosPorProduto({ videos }: { videos: VideoItem[] }) {
+  const [produtoAberto, setProdutoAberto] = useState<string | null>(null);
+
+  if (videos.length === 0) {
     return (
       <p className="text-sm text-[var(--color-chumbo-prix)]/70">
         Nenhum vídeo cadastrado ainda nessa linha.
@@ -212,23 +219,46 @@ function ListaVideos({ equipamentos }: { equipamentos: EquipamentoLista[] }) {
     );
   }
 
+  const porEquipamento = new Map<string, VideoItem[]>();
+  for (const video of videos) {
+    const lista = porEquipamento.get(video.equipamento_id) ?? [];
+    lista.push(video);
+    porEquipamento.set(video.equipamento_id, lista);
+  }
+
   return (
-    <ul className="flex flex-col gap-2">
-      {equipamentos.map((equipamento) => (
-        <li
-          key={equipamento.id}
-          className="flex items-center justify-between gap-2 rounded-md border border-gray-200 bg-white px-3 py-2"
+    <div className="flex flex-col gap-2">
+      {Array.from(porEquipamento.entries()).map(([equipamentoId, itens]) => (
+        <Cabecalho
+          key={equipamentoId}
+          titulo={`${itens[0].modelo} (${itens.length} ${itens.length === 1 ? "vídeo" : "vídeos"})`}
+          nivel={3}
+          aberto={produtoAberto === equipamentoId}
+          onToggle={() =>
+            setProdutoAberto((atual) =>
+              atual === equipamentoId ? null : equipamentoId,
+            )
+          }
         >
-          <span className="text-sm font-medium text-[var(--color-chumbo-prix)]">
-            {equipamento.modelo}
-          </span>
-          <CompartilharBotao
-            url={equipamento.url_video!}
-            titulo={`Vídeo — ${equipamento.modelo}`}
-          />
-        </li>
+          <ul className="flex flex-col gap-2">
+            {itens.map((video) => (
+              <li
+                key={video.id}
+                className="flex items-center justify-between gap-2 rounded-md border border-gray-200 px-3 py-2"
+              >
+                <span className="text-sm text-[var(--color-chumbo-prix)]">
+                  {video.titulo ?? "Vídeo"}
+                </span>
+                <CompartilharBotao
+                  url={video.url}
+                  titulo={`${itens[0].modelo} — ${video.titulo ?? "Vídeo"}`}
+                />
+              </li>
+            ))}
+          </ul>
+        </Cabecalho>
       ))}
-    </ul>
+    </div>
   );
 }
 
@@ -257,7 +287,7 @@ function ListaFotos({ fotos }: { fotos: FotoEquipamento[] }) {
           className="flex flex-col gap-2 rounded-md border border-gray-200 bg-white p-3"
         >
           <span className="text-sm font-medium text-[var(--color-chumbo-prix)]">
-            {itens[0].modelo}
+            {itens[0].modelo} ({itens.length})
           </span>
           <div className="flex flex-wrap gap-2">
             {itens.map((foto) => (

@@ -22,9 +22,6 @@ export interface Equipamento {
   specs_tecnicas: SpecsTecnicas;
   restricoes_uso: string | null;
   url_ficha_tecnica: string | null;
-  // link real de vídeo (Drive) — nunca inventado; só populado quando um vídeo
-  // do próprio modelo foi encontrado na pasta oficial "5 - Vídeos" do Drive.
-  url_video: string | null;
   status: "ativo" | "descontinuado";
   fonte: string;
   revisado_por: string | null;
@@ -39,6 +36,17 @@ export interface ImagemEquipamento {
   url_webp: string;
   url_jpg_fallback: string;
   tipo: "produto" | "detalhe" | "aplicacao";
+  ordem: number;
+}
+
+// link real de vídeo (Drive) — nunca inventado; só existe quando um vídeo do
+// próprio modelo foi encontrado na pasta oficial "5 - Vídeos" do Drive. 1:N
+// porque um modelo costuma ter vários vídeos reais (ex.: Prix 5 Plus tem 6).
+export interface VideoEquipamento {
+  id: string;
+  equipamento_id: string;
+  titulo: string | null;
+  url: string;
   ordem: number;
 }
 

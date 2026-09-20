@@ -51,16 +51,30 @@ create table if not exists imagens_equipamento (
   ordem             int default 0
 );
 
+-- um modelo tem vários vídeos reais na pasta "5 - Vídeos" do Drive (ex.: Prix 5
+-- Plus tem 6) — por isso tabela própria (1:N), igual imagens_equipamento, em vez
+-- de uma coluna única em equipamentos. url sempre um link real já confirmado
+-- na pasta do próprio modelo, nunca inventado (mesma regra de qualquer campo).
+create table if not exists videos_equipamento (
+  id                uuid primary key default gen_random_uuid(),
+  equipamento_id    uuid not null references equipamentos(id) on delete cascade,
+  titulo            text,
+  url               text not null,
+  ordem             int default 0
+);
+
 create index if not exists idx_equipamentos_linha on equipamentos(linha);
 create index if not exists idx_equipamentos_categoria on equipamentos(categoria);
 create index if not exists idx_equipamentos_status on equipamentos(status);
 create index if not exists idx_imagens_equipamento_id on imagens_equipamento(equipamento_id);
+create index if not exists idx_videos_equipamento_id on videos_equipamento(equipamento_id);
 
 -- RLS: leitura liberada a qualquer usuário autenticado; escrita só via service_role
 -- (aplicado como migration separada no Supabase — replicado aqui para quem recriar o schema do zero)
 alter table linhas_negocio enable row level security;
 alter table equipamentos enable row level security;
 alter table imagens_equipamento enable row level security;
+alter table videos_equipamento enable row level security;
 
 create policy "leitura autenticada - linhas_negocio" on linhas_negocio
   for select to authenticated using (true);
@@ -73,6 +87,16 @@ create policy "leitura autenticada - imagens_equipamento" on imagens_equipamento
     exists (
       select 1 from equipamentos e
       where e.id = imagens_equipamento.equipamento_id
+        and e.revisado_por is not null
+        and e.status = 'ativo'
+    )
+  );
+
+create policy "leitura autenticada - videos_equipamento" on videos_equipamento
+  for select to authenticated using (
+    exists (
+      select 1 from equipamentos e
+      where e.id = videos_equipamento.equipamento_id
         and e.revisado_por is not null
         and e.status = 'ativo'
     )

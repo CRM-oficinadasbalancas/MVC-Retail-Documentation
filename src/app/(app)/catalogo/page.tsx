@@ -1,5 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
-import { CatalogoMenu, type FotoEquipamento } from "@/components/CatalogoMenu";
+import {
+  CatalogoMenu,
+  type FotoEquipamento,
+  type VideoItem,
+} from "@/components/CatalogoMenu";
 
 export default async function CatalogoPage() {
   const supabase = await createClient();
@@ -11,25 +15,45 @@ export default async function CatalogoPage() {
 
   const { data: equipamentos, error } = await supabase
     .from("equipamentos")
-    .select(
-      "id, modelo, linha, categoria, descricao_curta, restricoes_uso, url_video, status",
-    )
+    .select("id, modelo, linha, restricoes_uso, status")
     .order("modelo");
 
-  const { data: imagens } = await supabase
+  const { data: imagensData } = await supabase
     .from("imagens_equipamento")
-    .select("id, url_webp, url_jpg_fallback, equipamento_id, equipamentos(modelo, linha)")
+    .select(
+      "id, url_webp, url_jpg_fallback, equipamento_id, equipamentos(modelo, linha)",
+    )
     .order("ordem");
 
-  const fotos: FotoEquipamento[] = (imagens ?? []).map((imagem) => {
-    const equipamento = Array.isArray(imagem.equipamentos)
-      ? imagem.equipamentos[0]
-      : imagem.equipamentos;
+  const { data: videosData } = await supabase
+    .from("videos_equipamento")
+    .select("id, titulo, url, equipamento_id, equipamentos(modelo, linha)")
+    .order("ordem");
+
+  function equipamentoDoJoin(valor: unknown) {
+    const equipamento = Array.isArray(valor) ? valor[0] : valor;
+    return equipamento as { modelo?: string; linha?: string } | null;
+  }
+
+  const fotos: FotoEquipamento[] = (imagensData ?? []).map((imagem) => {
+    const equipamento = equipamentoDoJoin(imagem.equipamentos);
     return {
       id: imagem.id,
       equipamento_id: imagem.equipamento_id,
       url_webp: imagem.url_webp,
       url_jpg_fallback: imagem.url_jpg_fallback,
+      modelo: equipamento?.modelo ?? "",
+      linha: equipamento?.linha ?? "",
+    };
+  });
+
+  const videos: VideoItem[] = (videosData ?? []).map((video) => {
+    const equipamento = equipamentoDoJoin(video.equipamentos);
+    return {
+      id: video.id,
+      equipamento_id: video.equipamento_id,
+      titulo: video.titulo,
+      url: video.url,
       modelo: equipamento?.modelo ?? "",
       linha: equipamento?.linha ?? "",
     };
@@ -51,6 +75,7 @@ export default async function CatalogoPage() {
         <CatalogoMenu
           linhas={linhas ?? []}
           equipamentos={equipamentos ?? []}
+          videos={videos}
           fotos={fotos}
         />
       )}

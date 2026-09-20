@@ -164,7 +164,7 @@ implica migrar de volta pro projeto Supabase compartilhado.
 ## Schema
 
 Ver `schema.sql` na raiz do projeto (inclui as tabelas e as policies de RLS já aplicadas
-no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equipamento`.
+no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipamento` e `videos_equipamento`.
 
 ## Status atual / próximas pendências
 
@@ -215,28 +215,35 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos` e `imagens_equip
    botão "Gerar apresentação (PDF)" em `/comparar`, arquivo baixado como
    `comparativo-toledo.pdf`.
 8. **Novo layout do `/catalogo`** (`src/components/CatalogoMenu.tsx`) — não é
-   mais abas no topo, é um **menu em lista ancorado à direita** (a pedido do
-   usuário, que corrigiu a primeira versão em abas), com um cabeçalho
+   abas no topo, é um **menu em lista ancorado à esquerda**, com um cabeçalho
    acordeão por item: `MVC`, `MVI` (dinâmico de `linhas_negocio`, sem
    hardcode), **Vídeos** e **Fotos**. Abrir `MVC`/`MVI` mostra os
-   equipamentos daquela linha (`EquipamentoCard`, extraído em
-   `src/components/EquipamentoCard.tsx` pra reuso). Abrir `Vídeos` ou `Fotos`
-   mostra um sub-menu aninhado com `MVC`/`MVI` de novo, pra separar o
-   conteúdo por linha antes de listar.
+   equipamentos daquela linha — na lista, **só o modelo** (sem descritivo;
+   `EquipamentoCard` em `src/components/EquipamentoCard.tsx` foi simplificado
+   pra isso), a ficha completa (specs, diferenciais, restrições) só aparece
+   ao abrir o equipamento. Exceção: o aviso de `restricoes_uso` continua
+   visível já na lista — não pode ficar escondido, é regra de segurança (ver
+   "REGRA CRÍTICA" acima). Abrir `Vídeos` ou `Fotos` mostra um sub-menu
+   aninhado com `MVC`/`MVI` de novo, pra separar o conteúdo por linha antes
+   de listar.
    - Vídeos e fotos são pra **compartilhar com o cliente, não assistir/ver
      dentro do app** — por isso cada item tem um botão "Compartilhar"
      (`src/components/CompartilharBotao.tsx`, usa a Web Share API no
      mobile, cai pra copiar o link no desktop), sem player/preview embutido.
-   - `url_video` (coluna nova em `equipamentos`, migration
-     `add_url_video_equipamentos`) só é preenchida quando um vídeo real do
-     próprio modelo foi confirmado na pasta oficial "5 - Vídeos" do Drive —
-     nunca inventado, mesma regra de qualquer outro campo. Populado até
-     agora: Prix 5 Plus, Prix 4 Uno, Prix 4 Due, Prix 4 Trend, 2095. Vídeos
-     encontrados sob o nome "Prix 6i" (pasta "Prix 6 e 6i c/ Etiqueta
-     contínua") **não** foram linkados ao registro "Prix 6" — a ficha do
-     "Prix 6" (20.000 itens, TFT 7", leitura 2D) não confirma que seja o
-     mesmo produto que os vídeos de "6i" com etiqueta contínua; fica sem
-     vídeo até confirmar. Pastas de vídeo do MVI ("Piso", "Bancada" etc.)
+   - **Vídeos são 1:N por equipamento** (tabela nova `videos_equipamento`,
+     mesmo padrão de `imagens_equipamento` — substituiu a coluna única
+     `url_video` que tinha sido criada antes, removida na mesma migration).
+     Motivo: um modelo tem vários vídeos reais na pasta "5 - Vídeos" do
+     Drive (ex.: Prix 5 Plus tem 6), e o vendedor precisa ver a quantidade
+     antes de escolher qual mandar — por isso o cabeçalho de cada produto
+     dentro de Vídeos já mostra "Modelo (N vídeos)". Populado até agora:
+     Prix 5 Plus (6), Prix 4 Uno (3), Prix 4 Due (1), Prix 4 Trend (1), 2095
+     (1) — todos links reais confirmados na pasta do próprio modelo, nunca
+     inventados. Vídeos encontrados sob o nome "Prix 6i" (pasta "Prix 6 e 6i
+     c/ Etiqueta contínua") **não** foram linkados ao registro "Prix 6" — a
+     ficha do "Prix 6" (20.000 itens, TFT 7", leitura 2D) não confirma que
+     seja o mesmo produto que os vídeos de "6i" com etiqueta contínua; fica
+     sem vídeo até confirmar. Pastas de vídeo do MVI ("Piso", "Bancada" etc.)
      ainda não foram abertas para checar match com 2180 Piso Inox / 2199.
    - Fotos usa `imagens_equipamento` (já existia no schema) — hoje sem
      nenhum registro, então a aba mostra "nenhuma foto cadastrada ainda" até
