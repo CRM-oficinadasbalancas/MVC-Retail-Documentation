@@ -249,3 +249,30 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      nenhum registro, então a aba mostra "nenhuma foto cadastrada ainda" até
      as imagens serem enviadas pelo usuário e cadastradas (ver pendência do
      pipeline Drive→Supabase de imagens).
+9. **Migração completa do catálogo Drive → Supabase, em andamento** — a pedido do
+   usuário ("vamos migrar tudo que está na pasta MVC e MVI"), varrendo pasta por pasta
+   de `1 - Catálogos - MVC` (e depois `2 - Catálogo - MVI`), cruzando cada catálogo
+   comercial com a LTP correspondente, mesmo processo de sempre (`diferenciais` do
+   catálogo primeiro, LTP só pra `restricoes_uso`/`url_ficha_tecnica`, catálogo
+   prevalece em conflito). Catálogo foi de 6 → 25 equipamentos nesta sessão:
+   - Pasta **Automação** (MVC) — completa. Adicionados: Prix 7T, Prix 7E, Prix 6i,
+     Prix 5W Plus (Prix 6i agora confirmado como modelo próprio, distinto do Prix
+     6 — resolve a dúvida da pendência de vídeo do item 8 acima; os vídeos "6i" já
+     encontrados ainda precisam ser linkados a este registro).
+   - Pasta **Checkout** (MVC) — completa. Adicionados: Prix Self Checkout, Prix 8217,
+     Prix VSi 410, Magellan 3550 HSi, Magellan 9400i (os 3 últimos são leitores/scanner,
+     não balança — mas fazem parte do catálogo comercial oficial da pasta, por isso
+     entraram).
+   - Pasta **Varejo** (MVC, mapeia pra categoria "Bancada e Pesadoras") — completa,
+     exceto **Prix 9094** (não confundir com 9094 Plus): o arquivo na pasta é só um
+     stub de texto com uma URL externa (`stportalcorporativoprd.blob.core.windows.net`),
+     não o PDF real — não lido ainda, fica pendente. Adicionados: Prix Splash BC201W,
+     Prix Splash BP201W, 9094 Plus, 2099, Prix 3 Fit, Prix 3 Plus. 2099 tem a mesma
+     restrição Inmetro do 2098 C (não pode venda direta ao público) — confirmado na
+     LTP, seguindo o mesmo padrão já registrado pro 2098 C.
+   - **Ainda não abertas**: dentro de MVC, faltam as pastas Pesagem de Pessoas,
+     Fatiadores de Frios, Indicadores Digitais, Etiquetas Eletrônicas, Impressoras
+     Comerciais, Suprimentos, MIT - Mídia Interna, mais as pastas soltas (Robust,
+     Pesagem de Animais Vivos, Seladora a Vácuo, Hamburgueria, Fatiador de Frango,
+     Leitor vertical, Tendal 200, Fatiador de carnes, Estimadora de peso) — e a pasta
+     `2 - Catálogo - MVI` inteira ainda não foi aberta. Continuar nessa ordem.
