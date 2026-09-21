@@ -25,6 +25,8 @@ const LARGURA_LABEL = 130;
 const TAMANHO_FONTE_GRADE = 8.5;
 const ALTURA_LINHA_TEXTO = TAMANHO_FONTE_GRADE + 3.5;
 const PADDING_CELULA = 6;
+const ALTURA_FOTO = 62;
+const ALTURA_LINHA_FOTOS = ALTURA_FOTO + PADDING_CELULA * 2;
 
 // Rótulos legíveis para o cliente final — as chaves em snake_case do banco
 // não vão bonitas num PDF que o vendedor compartilha. Chave sem entrada aqui
@@ -69,6 +71,7 @@ const CHAVES_EXCLUIDAS_DA_GRADE = new Set([
  */
 export async function gerarApresentacaoPdf(
   equipamentos: Equipamento[],
+  urlsFoto: Map<string, string> = new Map(),
 ): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
   const fonteRegular = await pdf.embedFont(StandardFonts.Helvetica);
@@ -82,11 +85,13 @@ export async function gerarApresentacaoPdf(
 
   const fontes = { fonteRegular, fonteBold, fonteItalica };
   const larguraColuna = (LARGURA - MARGEM * 2 - LARGURA_LABEL) / equipamentos.length;
+  const fotos = await embedFotos(pdf, equipamentos, urlsFoto);
 
   let pagina = novaPaginaGrade(pdf, logo, fontes, equipamentos);
   let y = ALTURA - ALTURA_TOPO - 12;
 
   y = desenharCabecalhoColunas(pagina, fontes, equipamentos, y, larguraColuna);
+  y = desenharLinhaFotos(pagina, fontes, equipamentos, fotos, y, larguraColuna);
 
   for (const linha of montarLinhasGrade(equipamentos)) {
     const alturaLinha = alturaDaLinha(linha, fontes.fonteRegular, larguraColuna);
@@ -218,6 +223,104 @@ function desenharCabecalhoColunas(
       color: rgb(0.85, 0.92, 0.98),
       maxWidth: larguraColuna - PADDING_CELULA * 2,
     });
+  });
+
+  return yBase;
+}
+
+// Busca a foto de capa de cada equipamento em imagens_equipamento (tipo
+// 'produto' tem prioridade; na falta dele, cai pra primeira imagem
+// disponível de qualquer tipo). Equipamento sem nenhuma imagem cadastrada
+// fica de fora do mapa — a célula mostra "Sem foto cadastrada", nunca uma
+// imagem inventada ou de outro modelo.
+async function embedFotos(
+  pdf: PDFDocument,
+  equipamentos: Equipamento[],
+  urlsFoto: Map<string, string>,
+): Promise<Map<string, PDFImage>> {
+  const resultado = new Map<string, PDFImage>();
+
+  await Promise.all(
+    equipamentos.map(async (equipamento) => {
+      const url = urlsFoto.get(equipamento.id);
+      if (!url) return;
+
+      try {
+        const resposta = await fetch(url);
+        if (!resposta.ok) return;
+        const bytes = new Uint8Array(await resposta.arrayBuffer());
+
+        try {
+          resultado.set(equipamento.id, await pdf.embedJpg(bytes));
+        } catch {
+          resultado.set(equipamento.id, await pdf.embedPng(bytes));
+        }
+      } catch {
+        // imagem indisponível no momento da geração — segue sem foto
+      }
+    }),
+  );
+
+  return resultado;
+}
+
+function desenharLinhaFotos(
+  page: PDFPage,
+  fontes: Fontes,
+  equipamentos: Equipamento[],
+  fotos: Map<string, PDFImage>,
+  yTopo: number,
+  larguraColuna: number,
+): number {
+  const yBase = yTopo - ALTURA_LINHA_FOTOS;
+
+  page.drawRectangle({
+    x: MARGEM,
+    y: yBase,
+    width: LARGURA_LABEL,
+    height: ALTURA_LINHA_FOTOS,
+    color: CINZA_FAIXA,
+  });
+  page.drawText("Foto", {
+    x: MARGEM + PADDING_CELULA,
+    y: yBase + ALTURA_LINHA_FOTOS / 2 - 4,
+    size: TAMANHO_FONTE_GRADE,
+    font: fontes.fonteBold,
+    color: CHUMBO_PRIX,
+  });
+
+  equipamentos.forEach((equipamento, indice) => {
+    const x = MARGEM + LARGURA_LABEL + indice * larguraColuna;
+    const imagem = fotos.get(equipamento.id);
+
+    if (imagem) {
+      const larguraMax = larguraColuna - PADDING_CELULA * 2;
+      const escala = Math.min(larguraMax / imagem.width, ALTURA_FOTO / imagem.height, 1);
+      const w = imagem.width * escala;
+      const h = imagem.height * escala;
+      page.drawImage(imagem, {
+        x: x + (larguraColuna - w) / 2,
+        y: yBase + (ALTURA_LINHA_FOTOS - h) / 2,
+        width: w,
+        height: h,
+      });
+    } else {
+      page.drawText("Sem foto cadastrada", {
+        x: x + PADDING_CELULA,
+        y: yBase + ALTURA_LINHA_FOTOS / 2 - 3,
+        size: 7,
+        font: fontes.fonteItalica,
+        color: rgb(0.55, 0.55, 0.58),
+        maxWidth: larguraColuna - PADDING_CELULA * 2,
+      });
+    }
+  });
+
+  page.drawLine({
+    start: { x: MARGEM, y: yBase },
+    end: { x: LARGURA - MARGEM, y: yBase },
+    thickness: 0.5,
+    color: CINZA_BORDA,
   });
 
   return yBase;

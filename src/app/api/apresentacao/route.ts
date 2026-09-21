@@ -39,7 +39,31 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "Nenhum equipamento revisado encontrado para esses ids." }, { status: 404 });
   }
 
-  const pdfBytes = await gerarApresentacaoPdf(equipamentos as unknown as Equipamento[]);
+  const equipamentosTipados = equipamentos as unknown as Equipamento[];
+
+  // RLS de imagens_equipamento já garante que só imagens de equipamentos
+  // revisados/ativos voltam aqui (mesma policy usada em /catalogo)
+  const { data: imagensData } = await supabase
+    .from("imagens_equipamento")
+    .select("equipamento_id, url_jpg_fallback, tipo, ordem")
+    .in("equipamento_id", equipamentosTipados.map((e) => e.id))
+    .order("ordem");
+
+  // Prioriza a foto tipo 'produto'; na ausência dela, usa a primeira
+  // imagem disponível de qualquer tipo — nunca uma foto de outro modelo.
+  const urlsFoto = new Map<string, string>();
+  for (const img of imagensData ?? []) {
+    if (img.tipo === "produto" && !urlsFoto.has(img.equipamento_id)) {
+      urlsFoto.set(img.equipamento_id, img.url_jpg_fallback);
+    }
+  }
+  for (const img of imagensData ?? []) {
+    if (!urlsFoto.has(img.equipamento_id)) {
+      urlsFoto.set(img.equipamento_id, img.url_jpg_fallback);
+    }
+  }
+
+  const pdfBytes = await gerarApresentacaoPdf(equipamentosTipados, urlsFoto);
 
   return new NextResponse(Buffer.from(pdfBytes), {
     headers: {

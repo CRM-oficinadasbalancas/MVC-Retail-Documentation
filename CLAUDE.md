@@ -358,3 +358,19 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      externo, nunca aberto) e **Prix Filetto 350S** (só há screenshots de rede social,
      sem ficha técnica completa) — nenhum dos dois foi cadastrado por falta de fonte
      confiável, não por descuido.
+10. **PDF comparativo passou a incluir foto do equipamento** — a pedido do usuário. Nova
+    linha "Foto" na grade (`src/lib/apresentacao/pdf.ts`, funções `embedFotos` e
+    `desenharLinhaFotos`), logo abaixo do cabeçalho com o nome do modelo, aparece só na
+    primeira página (não repete nas páginas de continuação da grade, pra não tirar espaço
+    das specs). Busca em `imagens_equipamento` (`src/app/api/apresentacao/route.ts`):
+    prioriza imagem `tipo = 'produto'`, cai pra qualquer tipo disponível na ausência dela;
+    baixa `url_jpg_fallback` (pdf-lib não embute WebP, só JPG/PNG) e embute no PDF. Segue
+    a mesma regra de zero invenção: equipamento sem nenhuma imagem cadastrada mostra
+    "Sem foto cadastrada" na célula, nunca uma imagem de outro modelo ou um placeholder
+    genérico.
+    - Contexto: fotos de produto vêm de um portal interno da Toledo
+      (`parceiroprix.toledobrasil.com`), separado do Drive e bloqueado tanto para o agente
+      quanto para download em massa no navegador do usuário — sem extensão de bulk
+      download disponível. Cadastro está sendo feito manualmente, aos poucos, em lotes
+      pequenos enviados direto pelo usuário (ainda nenhuma imagem cadastrada em
+      `imagens_equipamento` até o momento desta mudança).
