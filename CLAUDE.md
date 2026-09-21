@@ -249,7 +249,7 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      nenhum registro, então a aba mostra "nenhuma foto cadastrada ainda" até
      as imagens serem enviadas pelo usuário e cadastradas (ver pendência do
      pipeline Drive→Supabase de imagens).
-9. **Migração completa do catálogo Drive → Supabase, em andamento** — a pedido do
+9. **Migração completa do catálogo Drive → Supabase, concluída nesta sessão** — a pedido do
    usuário ("vamos migrar tudo que está na pasta MVC e MVI"), varrendo pasta por pasta
    de `1 - Catálogos - MVC` (e depois `2 - Catálogo - MVI`), cruzando cada catálogo
    comercial com a LTP correspondente, mesmo processo de sempre (`diferenciais` do
@@ -327,6 +327,34 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      (catálogo sozinho, mesmo padrão já usado quando não achava LTP no MVC).
      - Pasta **Piso** — completa. 2199 e 2180 Piso Inox (MVI) já existiam; adicionados
        2198 (portátil pesadora), 2198C (portátil pesadora e contadora), 2180 Lava
-       Rápido (piso lavável, IP68), 2180 Portátil. Catálogo em 62 equipamentos.
-     - **Ainda não abertas**: Guardian, MWS, Pesos Padrão, Balança Suspensa Toledo,
-       Painel, Tendal (MVI), Móveis, Terminais Standard, Precisão, Bancada IND.
+       Rápido (piso lavável, IP68), 2180 Portátil.
+     - Pasta **Tendal** (MVI) — completa. 2254 (balança de tendal industrial, capacidade
+       resumida como texto — a tabela de combinações trilho×célula no catálogo estava
+       mal OCRizada demais pra extrair um min/max numérico com confiança).
+     - Pasta **Precisão** — completa, catalogada por linha (não por SKU individual,
+       cada linha tem 3 a 5 modelos com a mesma estrutura de specs): Prix Laboratório
+       — Linha AS (analítica), Linha PS (precisão) e Linha MA (analisador de umidade).
+     - Pasta **Bancada IND** — completa: 2090, 2096-H (lavável, IP-69K), 3400
+       (contadora).
+     - Pasta **Terminais Standard** — completa: 9097 (terminal de dosagem industrial),
+       9098 CT, TI400 / TI400P.
+     - Pasta **Guardian** — completa: Guardian (software de gestão logística/controle
+       de acesso de veículos, categoria "Soluções").
+     - Pasta **MWS** — completa: MWS Easy (software de gerenciamento de processos,
+       categoria "Soluções").
+     - Pasta **Painel** — completa: DR-200 (display remoto).
+     - Pasta **Móveis** — completa: BM500 (pesagem embarcada em empilhadeira,
+       Bluetooth) e PL-3000 (balança transpaleteira, com 2 opções de carrinho —
+       BYG e Paletrans — resumidas num só registro).
+     - Pasta **Pesos Padrão** — completa: um único registro resumo ("Pesos e
+       Massas-Padrão Prix") — são milhares de SKUs individuais por valor nominal
+       (1mg a 2.000kg) e classe, catalogados no nível de produto/linha, não por peso
+       individual, mesma regra de sempre.
+     - Pasta **Balança Suspensa Toledo** — completa: BST (crane scale, norma ASME B40)
+       e MSI-3460 Challenger 3 (crane scale com ScaleCore).
+   - **Com isso, as pastas `1 - Catálogos - MVC` e `2 - Catálogo - MVI` estão
+     inteiramente migradas.** Catálogo foi de 6 (início da sessão) para **80
+     equipamentos**. Pendências residuais conhecidas: **Prix 9094** (stub de link
+     externo, nunca aberto) e **Prix Filetto 350S** (só há screenshots de rede social,
+     sem ficha técnica completa) — nenhum dos dois foi cadastrado por falta de fonte
+     confiável, não por descuido.
