@@ -270,9 +270,20 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      Prix Splash BP201W, 9094 Plus, 2099, Prix 3 Fit, Prix 3 Plus. 2099 tem a mesma
      restrição Inmetro do 2098 C (não pode venda direta ao público) — confirmado na
      LTP, seguindo o mesmo padrão já registrado pro 2098 C.
-   - **Ainda não abertas**: dentro de MVC, faltam as pastas Pesagem de Pessoas,
-     Fatiadores de Frios, Indicadores Digitais, Etiquetas Eletrônicas, Impressoras
-     Comerciais, Suprimentos, MIT - Mídia Interna, mais as pastas soltas (Robust,
-     Pesagem de Animais Vivos, Seladora a Vácuo, Hamburgueria, Fatiador de Frango,
-     Leitor vertical, Tendal 200, Fatiador de carnes, Estimadora de peso) — e a pasta
-     `2 - Catálogo - MVI` inteira ainda não foi aberta. Continuar nessa ordem.
+   - Pasta **Pesagem de Pessoas** (MVC) — completa. Adicionados: 2096 PP, 2098 PP,
+     Júnior Plus (balança de bebê).
+   - Pasta **Fatiadores de Frios** (MVC, mapeia pra categoria "Fatiadores") — **parcial**.
+     Adicionado só o **Prix Agile 300S** (dados limpos, catálogo + LTP com tabela de
+     specs completa). A linha maior de fatiadores (Prix Mezzo 300S/300AS, Veloce 350A,
+     Supremo 350A/350S, Filetto 350C — carnes — e a linha antiga Uni 350G/GA/Comfort,
+     9300G/Comfort) tem specs espalhadas em PDFs grandes com várias imagens PNG de
+     tabela mal OCRizadas (números cortados/ambíguos) — arriscado extrair sem abrir
+     cada PNG/PDF com mais cuidado individualmente. Deixado pra uma rodada dedicada,
+     não misturado com o resto pra não arriscar inventar spec por pressa.
+   - **Ainda não abertas**: dentro de MVC, faltam as pastas Indicadores Digitais,
+     Etiquetas Eletrônicas, Impressoras Comerciais, Suprimentos, MIT - Mídia Interna,
+     mais as pastas soltas (Robust, Pesagem de Animais Vivos, Seladora a Vácuo,
+     Hamburgueria, Fatiador de Frango, Leitor vertical, Tendal 200, Fatiador de carnes,
+     Estimadora de peso) — e a pasta `2 - Catálogo - MVI` inteira ainda não foi aberta.
+     Também pendente: **Prix 9094** (não confundir com 9094 Plus, já cadastrado) —
+     arquivo na pasta Varejo é só um stub de texto com URL externa, ainda não lido.
