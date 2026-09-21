@@ -277,13 +277,34 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      specs completa). A linha maior de fatiadores (Prix Mezzo 300S/300AS, Veloce 350A,
      Supremo 350A/350S, Filetto 350C — carnes — e a linha antiga Uni 350G/GA/Comfort,
      9300G/Comfort) tem specs espalhadas em PDFs grandes com várias imagens PNG de
-     tabela mal OCRizadas (números cortados/ambíguos) — arriscado extrair sem abrir
-     cada PNG/PDF com mais cuidado individualmente. Deixado pra uma rodada dedicada,
-     não misturado com o resto pra não arriscar inventar spec por pressa.
-   - **Ainda não abertas**: dentro de MVC, faltam as pastas Indicadores Digitais,
-     Etiquetas Eletrônicas, Impressoras Comerciais, Suprimentos, MIT - Mídia Interna,
-     mais as pastas soltas (Robust, Pesagem de Animais Vivos, Seladora a Vácuo,
-     Hamburgueria, Fatiador de Frango, Leitor vertical, Tendal 200, Fatiador de carnes,
-     Estimadora de peso) — e a pasta `2 - Catálogo - MVI` inteira ainda não foi aberta.
-     Também pendente: **Prix 9094** (não confundir com 9094 Plus, já cadastrado) —
-     arquivo na pasta Varejo é só um stub de texto com URL externa, ainda não lido.
+     tabela mal OCRizadas (números cortados/ambíguos) — mas ao ler o texto completo
+     dos dois PDFs grandes (`Fatiadores novos.pdf` e `Fatiadores_Prix_Web_encrypt.pdf`)
+     via `read_file_content` em vez de confiar só no snippet/PNG, os dados vieram
+     limpos. Completada: Prix Mezzo 300S, Prix Mezzo 300 AS, Prix Supremo 350S, Prix
+     Supremo 350A, Prix Veloce 350A, Prix Filetto 350C (carnes — mesma peça que
+     aparecia como "UNI 350 C" numa LTP mais antiga), Prix Uni 350 GA, Prix Uni 350 G
+     Comfort, Prix Uni 350 G, Prix 9300G Comfort, Prix 9300G.
+   - Pasta **Indicadores Digitais** (MVC, categoria "Indicadores") — completa.
+     Adicionados: TI200, 9098 C, 9098 (esse último só tem LTP, sem catálogo comercial
+     correspondente — por isso ficou sem `diferenciais`, só specs técnicas da LTP).
+   - Pasta **Etiquetas Eletrônicas** (MVC) — completa (nível de produto, não de
+     tamanho — um ESL tem várias variantes de tamanho, mesma regra de não duplicar por
+     SKU). Duas linhas distintas: **Etiqueta Eletrônica Pricer** (infravermelho, LTP
+     encontrada) e **Prix TAG** (parceria com a Zkong, Bluetooth 5.0, sem LTP própria —
+     tamanhos complementados pelos datasheets individuais da pasta "ESLs Z-kong").
+   - Pasta **Impressoras Comerciais** (MVC, categoria "Impressores") — completa.
+     Adicionados: Prix IT400M, 451 Comercial (esta última com restrição: uso exclusivo
+     do Mercado Comercial, não industrial — confirmado na LTP).
+   - Pasta **Suprimentos** (MVC, categoria "Etiquetas Térmicas") — completa. Um único
+     registro resumo ("Etiqueta Térmica Prix", 13 tamanhos de rolo), nível de modelo,
+     não por tamanho individual.
+   - Pasta **MIT - Mídia Interna** (MVC) — completa. Adicionado MIT 7 (software +
+     hardware do player MIT Player W).
+   - Com isso, **todas as pastas de categoria da LTP-MVC dentro de Catálogos-MVC estão
+     cobertas**. Catálogo em 49 equipamentos.
+   - **Ainda não abertas**: as pastas soltas de MVC (Robust, Pesagem de Animais Vivos,
+     Seladora a Vácuo, Hamburgueria, Fatiador de Frango, Leitor vertical, Tendal 200,
+     Fatiador de carnes, Estimadora de peso) — e a pasta `2 - Catálogo - MVI` inteira
+     ainda não foi aberta. Também pendente: **Prix 9094** (não confundir com 9094
+     Plus, já cadastrado) — arquivo na pasta Varejo é só um stub de texto com URL
+     externa, ainda não lido.
