@@ -300,11 +300,23 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      não por tamanho individual.
    - Pasta **MIT - Mídia Interna** (MVC) — completa. Adicionado MIT 7 (software +
      hardware do player MIT Player W).
-   - Com isso, **todas as pastas de categoria da LTP-MVC dentro de Catálogos-MVC estão
-     cobertas**. Catálogo em 49 equipamentos.
-   - **Ainda não abertas**: as pastas soltas de MVC (Robust, Pesagem de Animais Vivos,
-     Seladora a Vácuo, Hamburgueria, Fatiador de Frango, Leitor vertical, Tendal 200,
-     Fatiador de carnes, Estimadora de peso) — e a pasta `2 - Catálogo - MVI` inteira
-     ainda não foi aberta. Também pendente: **Prix 9094** (não confundir com 9094
-     Plus, já cadastrado) — arquivo na pasta Varejo é só um stub de texto com URL
+   - Pastas soltas do MVC (fora da taxonomia de categoria, mas com catálogo comercial
+     próprio) — todas abertas e migradas: **Tendal 200** (categoria "Balança de
+     Tendal", LTP encontrada), **Estimadora de peso** (2114, categoria "Estimadoras de
+     Peso", com restrição Inmetro explícita — vedado pra venda direta, só estimativa),
+     **Fatiador de Frango** (Prix Versatile, categoria "Fatiadores"), **Robust**
+     (Prix Robust 370A, categoria "Fatiadores", industrial), **Pesagem de Animais
+     Vivos** (Prix MGR 4000 Campo e Prix MGR 4000, categoria "Soluções" — MGR 4000
+     Campo com restrição "interditado pra venda direta ao público", confirmada na
+     imagem do próprio display), **Seladora a Vácuo** (Prix Vac, categoria
+     "Soluções"), **Hamburgueria** (Prix Formati 10 e Prix Formati 20, categoria
+     "Soluções"). **Leitor vertical** e **Fatiador de carnes** eram duplicatas
+     (Prix VSi 410 já cadastrado em Checkout; o fatiador de carnes "UNI 350C" é a
+     mesma peça do Prix Filetto 350C já cadastrado) — não recadastrados. Ficou de fora
+     por falta de dado confiável: um possível "Prix Filetto 350S" (só há screenshots
+     de rede social na pasta, sem tabela de especificações completa).
+   - **Com isso, a pasta `1 - Catálogos - MVC` inteira está migrada.** Catálogo em 58
+     equipamentos. Único pendente dentro de MVC: **Prix 9094** (não confundir com
+     9094 Plus, já cadastrado) — arquivo na pasta Varejo é só um stub de texto com URL
      externa, ainda não lido.
+   - **Próximo passo**: pasta `2 - Catálogo - MVI` inteira ainda não foi aberta.
