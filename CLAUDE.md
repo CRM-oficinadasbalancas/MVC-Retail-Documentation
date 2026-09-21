@@ -319,4 +319,14 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      equipamentos. Único pendente dentro de MVC: **Prix 9094** (não confundir com
      9094 Plus, já cadastrado) — arquivo na pasta Varejo é só um stub de texto com URL
      externa, ainda não lido.
-   - **Próximo passo**: pasta `2 - Catálogo - MVI` inteira ainda não foi aberta.
+   - **Pasta `2 - Catálogo - MVI`** — estrutura mapeada: 11 subpastas (Guardian, MWS,
+     Pesos Padrão, Balança Suspensa Toledo, Painel, Tendal, Piso, Móveis, Terminais
+     Standard, Precisão, Bancada IND). Diferente da MVC, a LTP-MVI não segue essa
+     taxonomia (é por aplicação, não por categoria — ver "Origem dos dados"), então
+     essas pastas foram cruzadas sem busca de LTP correspondente na maioria dos casos
+     (catálogo sozinho, mesmo padrão já usado quando não achava LTP no MVC).
+     - Pasta **Piso** — completa. 2199 e 2180 Piso Inox (MVI) já existiam; adicionados
+       2198 (portátil pesadora), 2198C (portátil pesadora e contadora), 2180 Lava
+       Rápido (piso lavável, IP68), 2180 Portátil. Catálogo em 62 equipamentos.
+     - **Ainda não abertas**: Guardian, MWS, Pesos Padrão, Balança Suspensa Toledo,
+       Painel, Tendal (MVI), Móveis, Terminais Standard, Precisão, Bancada IND.
