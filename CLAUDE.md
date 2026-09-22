@@ -439,10 +439,20 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
     - `preco_faixa`/service role/chaves usadas neste diagnóstico não tocaram no schema nem
       foram commitadas; `.env.local` (gitignored) foi criado e removido só pra rodar o
       `next dev` localmente com a chave pública (anon/publishable) do Supabase.
-    - **Pendente, não resolvido nesta sessão**: usuário também reportou que o **PDF
-      comparativo abre em paisagem em vez de retrato no mobile**. Isso contradiz uma decisão
-      explícita anterior (item 7 acima: trocado de retrato pra paisagem a pedido do próprio
-      usuário, com exemplo de referência trazido por ele). Antes de reverter, é preciso
-      confirmar com o usuário se ele quer voltar pro formato retrato (permanentemente) ou
-      se o problema é só a experiência de abrir um PDF paisagem na tela de um celular
-      (rolagem/zoom) — não implementado ainda, aguardando resposta.
+    - **PDF revertido pra retrato, uma página por modelo** — usuário confirmou (perguntado
+      diretamente, já que contradizia a decisão anterior do item 7): quer retrato sempre
+      (não só no mobile) e no formato original de uma página por modelo, não uma tabela
+      comparativa em pé. `src/lib/apresentacao/pdf.ts` foi recuperado do commit anterior à
+      mudança pra paisagem (`03fac86`, via `git show`) como base — A4 retrato
+      (595.28×841.89pt), cabeçalho azul com logo, capacidade em destaque, caixa de
+      restrições, "Por que vender este modelo" com os `diferenciais`, tabela de detalhes
+      técnicos, rodapé com fonte/revisor. A funcionalidade de foto (item 10 acima) foi
+      reintegrada nesse formato: uma imagem por modelo (não a grade de fotos da versão
+      paisagem), inserida logo abaixo do título, antes da descrição — mesma função
+      `embedFotos` reaproveitada, mesma regra de zero invenção (sem foto cadastrada, a
+      página simplesmente segue sem imagem, sem inventar nem repetir foto de outro
+      modelo). Testado com PDF de exemplo (dados fake) renderizado via Chromium — visual
+      conferido, formato correto. `src/app/api/apresentacao/route.ts` não precisou mudar
+      (mesma assinatura `gerarApresentacaoPdf(equipamentos, urlsFoto)`).
+      - A grade comparativa em paisagem (item 7 acima) fica só de referência histórica
+        neste changelog — não existe mais no código.
