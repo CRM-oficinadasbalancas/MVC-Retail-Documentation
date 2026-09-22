@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/catalogo", label: "Catálogo" },
   { href: "/comparar", label: "Comparar" },
   { href: "/buscar", label: "Buscar com IA" },
+  { href: "/simulador", label: "Simulador" },
 ];
 
 // Logo oficial Prix — mesmo arquivo usado aqui e em

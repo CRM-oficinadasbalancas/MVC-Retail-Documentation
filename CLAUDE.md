@@ -465,3 +465,24 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
       (mesma assinatura `gerarApresentacaoPdf(equipamentos, urlsFoto)`).
       - A grade comparativa em paisagem (item 7 acima) fica só de referência histórica
         neste changelog — não existe mais no código.
+12. **Nova aba "Simulador"** — usuário mandou um APK (`Simulador_Final.apk`, ~3MB) e pediu
+    pra disponibilizar dentro do app **sem mudar nada da funcionalidade**. O APK era um
+    wrapper WebView: dentro dele (`assets/`) tinha um `index.html` completo e autocontido
+    (simulador de leasing/locação **grenke** de equipamentos Toledo — parcelas por prazo
+    24/36/48/60/72 meses, seguro por item, impostos PIS/COFINS/IRPJ/CSLL, exportação
+    Excel/PDF, geração de orçamento) mais um `xlsx.mini.min.js`. Confirmado por
+    inspeção: **zero chamadas de rede** (só `localStorage` pra persistir configuração de
+    taxas), já usa os mesmos tokens visuais azul/chumbo Prix. Por isso a integração foi
+    literal em vez de reescrita em React: os dois arquivos foram copiados **byte a byte**
+    (md5 conferido) pra `public/simulador/`, e uma página nova
+    (`src/app/(app)/simulador/page.tsx`) carrega esse HTML original via `<iframe>` — a
+    lógica de cálculo do simulador continua sendo o JS original, intocado. Link
+    "Simulador" adicionado ao nav do `Header.tsx`. Testado fora do Next.js (servidor
+    estático isolado + Chromium headless): adicionar equipamento, cálculo de seguro e
+    tabela de simulação de mensalidades funcionaram sem erro de console (só um 404 de
+    favicon, inofensivo). Fica atrás do mesmo login/RLS do resto do app (rota dentro do
+    grupo `(app)`), mesmo não fazendo nenhuma chamada ao Supabase.
+    - Esse simulador lida com preço/leasing — diferente da regra "preço fora de escopo"
+      do catálogo (`preco_faixa`), que é sobre o catálogo de equipamentos especificamente.
+      Ferramenta separada, adicionada a pedido explícito do usuário, não uma exceção
+      àquela regra.
