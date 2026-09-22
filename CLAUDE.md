@@ -374,3 +374,29 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
       download disponível. Cadastro está sendo feito manualmente, aos poucos, em lotes
       pequenos enviados direto pelo usuário (ainda nenhuma imagem cadastrada em
       `imagens_equipamento` até o momento desta mudança).
+    - **Atualização**: usuário conseguiu subir todas as imagens pra uma pasta própria no
+      Drive ("13 - Imagens de produtos") em vez do portal bloqueado — bem mais rápido.
+      Cruzamos os 56 arquivos originais contra os 80 equipamentos do catálogo; usuário
+      revisou os casos ambíguos e decidiu: `3400 Plus.png` fica de fora (balança nova,
+      ainda não criada no catálogo), toda a série antiga "2098 + indicador" (2098-1m-9098,
+      2098-0.5m-9098, remota ti200, art alta/baixa) fica de fora — **2098 C segue sem foto
+      por hora**, e a pasta "Fatadora Grande"/"_PRIX7_COLUNA" foram renomeadas pelo próprio
+      usuário pra `Toledo - Robust 370 - ...` (→ **Prix Robust 370A**) e
+      `_PRIX7T_COLUNA_NOVA_...` (→ **Prix 7T**), resolvendo a ambiguidade. Fechou em
+      **32 modelos / 48 arquivos** prontos pra cadastrar (mapeamento completo em
+      `scripts/migrar-imagens/manifest.json`).
+      - `Toledo 2124 ti200-714.png` foi tratado como foto do indicador **TI200** — "2124"
+        não é um modelo do catálogo, é uma plataforma de demonstração usada nas fotos dos
+        indicadores da pasta (mesmo padrão de `2124_9098C.png`, que foi descartado); a foto
+        photographs o indicador TI200 montado nela.
+      - Bucket público `imagens-equipamentos` criado no Supabase (migration
+        `criar_bucket_imagens_equipamentos`), leitura pública / escrita só via service role.
+      - **Upload efetivo ainda pendente**: a sandbox de nuvem desta sessão bloqueia egress
+        direto pra `*.supabase.co` (e `*.vercel.app`) por política de rede — as ferramentas
+        MCP do Supabase (SQL) funcionam porque passam pela infra da Anthropic, mas não há
+        ferramenta MCP de Storage, só chamada HTTP direta (bloqueada). Testado e confirmado:
+        conversão WebP+JPG via `sharp` funciona (validado com a foto do 2096 PP), só o
+        upload que não passa. Usuário vai rodar a etapa final localmente (tem Claude Code
+        instalado no PC, sem essa restrição) — ver `scripts/migrar-imagens/README.md` pro
+        passo a passo e `process_image.js` já pronto e testado (download do Drive → WebP+JPG
+        redimensionado ≤1600px → upload Storage → insert em `imagens_equipamento`).
