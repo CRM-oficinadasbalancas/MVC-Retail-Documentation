@@ -193,10 +193,14 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
    (ferramenta única) e geração de apresentação em PDF. **Pendente**: sync
    Drive→Supabase de imagens, geração em PPTX (só PDF foi implementado), domínio de
    e-mail real para o login, ampliar o catálogo além dos 5 modelos piloto.
-5. Login Google SSO testado de ponta a ponta em produção (`agente-toledo.vercel.app`,
-   projeto Vercel `agente-toledo`, sem proteção SSO da própria Vercel — desativada de
-   propósito pra não empilhar duas autenticações). Falta só travar
-   `ALLOWED_EMAIL_DOMAIN` com o domínio real antes de abrir pro time de vendas.
+5. Login Google SSO testado de ponta a ponta em produção (projeto Vercel `agente-toledo`,
+   sem proteção SSO da própria Vercel — desativada de propósito pra não empilhar duas
+   autenticações). Falta só travar `ALLOWED_EMAIL_DOMAIN` com o domínio real antes de
+   abrir pro time de vendas.
+   - **Domínio de acesso trocado pra `hub-prix.vercel.app`** — a pedido do usuário, mais
+     apresentável que o nome técnico do projeto. `agente-toledo.vercel.app` continua
+     ativo também (mesmo projeto Vercel, os dois apontam pro mesmo deploy); não foi
+     removido, só deixou de ser o link principal.
 6. `specs_tecnicas`/`descricao_curta` foram revisados uma segunda vez: a primeira
    extração puxou a seção técnica da LTP (grau de proteção, classe de exatidão etc.),
    que não ajuda o vendedor em campo. Corrigido para priorizar a chave `diferenciais`
