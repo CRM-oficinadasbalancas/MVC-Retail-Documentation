@@ -391,12 +391,26 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
         photographs o indicador TI200 montado nela.
       - Bucket público `imagens-equipamentos` criado no Supabase (migration
         `criar_bucket_imagens_equipamentos`), leitura pública / escrita só via service role.
-      - **Upload efetivo ainda pendente**: a sandbox de nuvem desta sessão bloqueia egress
-        direto pra `*.supabase.co` (e `*.vercel.app`) por política de rede — as ferramentas
-        MCP do Supabase (SQL) funcionam porque passam pela infra da Anthropic, mas não há
-        ferramenta MCP de Storage, só chamada HTTP direta (bloqueada). Testado e confirmado:
-        conversão WebP+JPG via `sharp` funciona (validado com a foto do 2096 PP), só o
-        upload que não passa. Usuário vai rodar a etapa final localmente (tem Claude Code
-        instalado no PC, sem essa restrição) — ver `scripts/migrar-imagens/README.md` pro
-        passo a passo e `process_image.js` já pronto e testado (download do Drive → WebP+JPG
-        redimensionado ≤1600px → upload Storage → insert em `imagens_equipamento`).
+      - **Upload via API bloqueado**: a sandbox de nuvem desta sessão (e de uma segunda
+        sessão aberta pelo usuário, mesmo bloqueio) impede chamada HTTP direta a
+        `*.supabase.co`/`*.vercel.app` por política de rede — as ferramentas MCP do
+        Supabase (SQL) funcionam porque passam pela infra da Anthropic, mas não há
+        ferramenta MCP de Storage. Além disso a ferramenta de download do Drive usada
+        nesta sessão tem limite rígido de 10MB por arquivo — boa parte dos renders
+        (20-43MB) não baixava por aqui de jeito nenhum, então nem convertendo pra
+        WebP+JPG (testado e funcional com `sharp`, só não usado no final) daria pra
+        processar tudo neste ambiente.
+      - **Resolvido via upload manual em dois passos, sem código**: usuário baixou a
+        pasta inteira direto do `drive.google.com` (zip nativo do próprio Drive, sem
+        extensão de terceiros) e arrastou os arquivos extraídos pro bucket
+        `imagens-equipamentos` pelo painel do Supabase. Confirmado por SQL que os 48
+        arquivos do mapeamento chegaram com nome e tamanho batendo com o Drive.
+        **As 48 linhas em `imagens_equipamento` foram inseridas nesta sessão** (SQL
+        direto, funciona normalmente) apontando pros arquivos originais PNG/JPG — sem
+        conversão pra WebP de verdade ainda (`url_webp` e `url_jpg_fallback` apontam pro
+        mesmo arquivo original por hora; pdf-lib e o `<picture>` do catálogo funcionam
+        normal com PNG/JPG, então não é um problema funcional, só um passo de otimização
+        que fica pendente). 32 equipamentos com foto, confirmado por `select count(*)`.
+      - `scripts/migrar-imagens/` (manifest, script de conversão local, README) pode ser
+        removido do repo — era ferramenta de uso único, a migração já foi concluída por
+        outro caminho.
