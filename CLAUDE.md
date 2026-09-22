@@ -423,6 +423,11 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
       estourava a tela. Corrigido com `flex-wrap` + nav em linha própria full-width no
       mobile (`order-3 w-full sm:w-auto`), título com `truncate`/`min-w-0` pra não forçar
       overflow.
+      - **Ajuste seguinte, a pedido do usuário**: o botão Voltar (`BotaoVoltar`) saiu de
+        dentro da faixa azul — lá ele podia sobrepor o logo em telas estreitas — e virou
+        uma faixa própria (fundo branco, borda inferior cinza) logo abaixo do cabeçalho
+        azul. `Header()` agora retorna as duas faixas como irmãs (fragment), renderizadas
+        antes do `<main>` em `(app)/layout.tsx`.
     - `src/components/CatalogoMenu.tsx` (função `Cabecalho`, usada em MVC/MVI/Vídeos/Fotos)
       — título e subtítulo sem `truncate`/`min-w-0`; nomes longos (ex.: "Prix Laboratório —
       Linha AS (Analítica)") empurravam o indicador `+`/`−` pra fora da tela em telas
