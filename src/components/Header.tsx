@@ -12,27 +12,33 @@ const LINKS = [
 // Logo oficial Prix — mesmo arquivo usado aqui e em
 // src/lib/apresentacao/pdf.ts, nunca escolhido pela IA. Ver CLAUDE.md §
 // "Identidade visual".
+// Em telas estreitas (celular, o alvo principal do app) o cabeçalho não cabe
+// numa linha só: voltar + logo + título + 3 links + sair. Em vez de estourar
+// horizontalmente, o nav quebra pra uma segunda linha (flex-wrap) — sem
+// esconder nada atrás de menu hambúrguer, os 3 links continuam sempre
+// visíveis, só reorganizados.
 export function Header() {
   return (
-    <header className="flex items-center justify-between gap-4 bg-[var(--color-azul-prix)] px-4 py-3 text-white">
-      <div className="flex items-center gap-4">
-        <BotaoVoltar className="text-white" />
+    <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-[var(--color-azul-prix)] px-4 py-3 text-white">
+      <div className="flex min-w-0 items-center gap-3">
+        <BotaoVoltar className="shrink-0 text-white" />
         <Image
           src="/logo/prix-logo.png"
           alt="Prix — Toledo do Brasil"
-          width={36}
-          height={36}
+          width={32}
+          height={32}
+          className="shrink-0"
         />
-        <span className="font-semibold">Agente Comercial</span>
+        <span className="truncate font-semibold">Agente Comercial</span>
       </div>
-      <nav className="flex gap-4 text-sm">
+      <SairButton />
+      <nav className="order-3 flex w-full justify-center gap-4 text-sm sm:order-none sm:w-auto sm:justify-start">
         {LINKS.map((link) => (
           <Link key={link.href} href={link.href} className="hover:underline">
             {link.label}
           </Link>
         ))}
       </nav>
-      <SairButton />
     </header>
   );
 }

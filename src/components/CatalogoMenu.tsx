@@ -156,21 +156,21 @@ function Cabecalho({
           nivel === 1 ? "py-3" : "py-2"
         }`}
       >
-        <span className="flex flex-col">
+        <span className="flex min-w-0 flex-col">
           <span
-            className={`font-semibold text-[var(--color-chumbo-prix)] ${
+            className={`truncate font-semibold text-[var(--color-chumbo-prix)] ${
               nivel !== 1 ? "text-sm" : ""
             }`}
           >
             {titulo}
           </span>
           {subtitulo && (
-            <span className="text-xs text-[var(--color-chumbo-prix)]/60">
+            <span className="truncate text-xs text-[var(--color-chumbo-prix)]/60">
               {subtitulo}
             </span>
           )}
         </span>
-        <span className="text-[var(--color-azul-prix)]">
+        <span className="shrink-0 text-[var(--color-azul-prix)]">
           {aberto ? "−" : "+"}
         </span>
       </button>

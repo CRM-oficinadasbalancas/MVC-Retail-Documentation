@@ -414,3 +414,35 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
       - `scripts/migrar-imagens/` (manifest, script de conversão local, README) pode ser
         removido do repo — era ferramenta de uso único, a migração já foi concluída por
         outro caminho.
+11. **Revisão de layout mobile** — a pedido do usuário ("páginas mobile ficaram fora de
+    esquadro"). Duas correções de CSS/Tailwind confirmadas por leitura de código (não foi
+    possível tirar screenshot autenticado — ver nota abaixo):
+    - `src/components/Header.tsx` — o cabeçalho tinha voltar + logo + título + 3 links de
+      navegação (Catálogo/Comparar/Buscar com IA) + Sair numa linha só sem quebra
+      (`flex justify-between` sem `flex-wrap`); em ~390px de largura (celular) isso
+      estourava a tela. Corrigido com `flex-wrap` + nav em linha própria full-width no
+      mobile (`order-3 w-full sm:w-auto`), título com `truncate`/`min-w-0` pra não forçar
+      overflow.
+    - `src/components/CatalogoMenu.tsx` (função `Cabecalho`, usada em MVC/MVI/Vídeos/Fotos)
+      — título e subtítulo sem `truncate`/`min-w-0`; nomes longos (ex.: "Prix Laboratório —
+      Linha AS (Analítica)") empurravam o indicador `+`/`−` pra fora da tela em telas
+      estreitas. Corrigido com `truncate` no título/subtítulo e `shrink-0` no indicador.
+    - **Não foi possível confirmar visualmente com screenshot** — o app inteiro (exceto
+      `/login`) exige sessão Google autenticada via `src/proxy.ts`/`src/lib/supabase/middleware.ts`,
+      e não há como logar via Google de forma headless nesta sessão. Uma tentativa de
+      contornar a autenticação localmente só pra diagnóstico (variável de ambiente
+      temporária, nunca commitada) foi corretamente barrada por uma checagem de segurança
+      do próprio Claude Code — decisão certa, não insisti. As correções acima foram
+      validadas por leitura cuidadosa do CSS/Tailwind (matemática de `flex-wrap`/
+      `min-width`), não por captura de tela. **Recomendo o usuário confirmar visualmente no
+      celular real** depois do deploy.
+    - `preco_faixa`/service role/chaves usadas neste diagnóstico não tocaram no schema nem
+      foram commitadas; `.env.local` (gitignored) foi criado e removido só pra rodar o
+      `next dev` localmente com a chave pública (anon/publishable) do Supabase.
+    - **Pendente, não resolvido nesta sessão**: usuário também reportou que o **PDF
+      comparativo abre em paisagem em vez de retrato no mobile**. Isso contradiz uma decisão
+      explícita anterior (item 7 acima: trocado de retrato pra paisagem a pedido do próprio
+      usuário, com exemplo de referência trazido por ele). Antes de reverter, é preciso
+      confirmar com o usuário se ele quer voltar pro formato retrato (permanentemente) ou
+      se o problema é só a experiência de abrir um PDF paisagem na tela de um celular
+      (rolagem/zoom) — não implementado ainda, aguardando resposta.
