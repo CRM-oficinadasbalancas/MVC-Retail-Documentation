@@ -245,10 +245,10 @@ no projeto Supabase). Tabelas: `linhas_negocio`, `equipamentos`, `imagens_equipa
      seja o mesmo produto que os vídeos de "6i" com etiqueta contínua; fica
      sem vídeo até confirmar. Pastas de vídeo do MVI ("Piso", "Bancada" etc.)
      ainda não foram abertas para checar match com 2180 Piso Inox / 2199.
-   - Fotos usa `imagens_equipamento` (já existia no schema) — hoje sem
-     nenhum registro, então a aba mostra "nenhuma foto cadastrada ainda" até
-     as imagens serem enviadas pelo usuário e cadastradas (ver pendência do
-     pipeline Drive→Supabase de imagens).
+   - Fotos usa `imagens_equipamento` (já existia no schema) — **populada com 48
+     fotos em 32 equipamentos** (ver item 10 abaixo), então a aba já mostra as
+     fotos reais agrupadas por modelo com o botão Compartilhar, sem precisar de
+     nenhuma mudança de código: a UI foi desenhada desde o início pra esse fim.
 9. **Migração completa do catálogo Drive → Supabase, concluída nesta sessão** — a pedido do
    usuário ("vamos migrar tudo que está na pasta MVC e MVI"), varrendo pasta por pasta
    de `1 - Catálogos - MVC` (e depois `2 - Catálogo - MVI`), cruzando cada catálogo
